@@ -20,22 +20,27 @@ public class BoardEntity {
     @Id //pk키 명시
     @GeneratedValue(strategy = GenerationType.IDENTITY) //auto_increment
     private int bno;        //게시물번호 pk
-    @Column(name = "title", length = 10, nullable = false, unique = true)
+
+
     private String btitle;
 
-    private boolean 필드0;
+    @JoinColumn //fk
+    @ManyToOne //다수가 하나에게 1대다
+    private MemberEntity memberEntity;
 
-    private byte 필드1;
-    private short 필드2;
-    private long 필드3;
-
-    private char 필드4;
-
-    private float 필드5;
-    private double 필드6;
-
-    private Date 필드7;
-    private LocalDateTime 필드8;
+//    private boolean 필드0;
+//
+//    private byte 필드1;
+//    private short 필드2;
+//    private long 필드3;
+//
+//    private char 필드4;
+//
+//    private float 필드5;
+//    private double 필드6;
+//
+//    private Date 필드7;
+//    private LocalDateTime 필드8;
 
 
 
