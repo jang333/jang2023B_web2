@@ -18,10 +18,14 @@ import Clock from './chapter4/Clock';
 //chapter5 실습
 import CommentList from './chapter5/CommentList';
 
+//chapter7 예제/실습
+import Counter from './chapter7/Counter';
+import UseStateList from './chapter7/UseStateList';
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <CommentList />
+    <UseStateList />
   </React.StrictMode>
 );
 //1.setInterval(함수(), 밀리초) : 밀리초마다 해당 함수 실행
