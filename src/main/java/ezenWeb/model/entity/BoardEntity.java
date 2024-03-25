@@ -1,32 +1,39 @@
 package ezenWeb.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "board")
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Table(name = "Board")
+@AllArgsConstructor @NoArgsConstructor
+@Setter @Getter @ToString @Builder
 public class BoardEntity {
-    @Id //pk키 명시
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //auto_increment
-    private int bno;        //게시물번호 pk
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int bno;
 
+    @Column(columnDefinition = "longtext")
+    private String bcontent;
 
-    private String btitle;
+    @Column//(columnDefinition = "unsigned int") unsigned: 증가만함 음수 없음.
+    @ColumnDefault("0")
+    private int bview;
 
-    @JoinColumn //fk
-    @ManyToOne //다수가 하나에게 1대다
+    //fk 필드
+    @JoinColumn(name = "mno_fk")
+    @ManyToOne
     private MemberEntity memberEntity;
+
+    //양방향 : 댓글 fk
+    @OneToMany(mappedBy = "boardEntity")
+    @ToString.Exclude
+    @Builder.Default
+    private List<ReplyEntity> replyEntityList = new ArrayList<>();
+
 
 //    private boolean 필드0;
 //
