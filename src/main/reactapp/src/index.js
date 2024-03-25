@@ -21,11 +21,18 @@ import CommentList from './chapter5/CommentList';
 //chapter7 예제/실습
 import Counter from './chapter7/Counter';
 import UseStateList from './chapter7/UseStateList';
+import Counter2 from './chapter7/Counter2';
+
+//chapter8 예제/실습
+import ConfirmButton from './chapter8/ConfirmButton';
+
+//chapter9 예제
+import LendingPage from './chapter9/LendingPage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <UseStateList />
+    <Counter2 />
   </React.StrictMode>
 );
 //1.setInterval(함수(), 밀리초) : 밀리초마다 해당 함수 실행
