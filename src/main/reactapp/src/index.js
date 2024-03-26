@@ -29,10 +29,20 @@ import ConfirmButton from './chapter8/ConfirmButton';
 //chapter9 예제
 import LendingPage from './chapter9/LendingPage';
 
+//chapter10 예제
+import AttendanceBook from './chapter10/AttendanceBook';
+
+//chapter11 예제
+import NameForm from './chapter11/NameForm';
+//import SignUp from './chapter11/SignUp';
+
+//
+import SignUp from './component/member/SignUp';
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Counter2 />
+    <SignUp />
   </React.StrictMode>
 );
 //1.setInterval(함수(), 밀리초) : 밀리초마다 해당 함수 실행
