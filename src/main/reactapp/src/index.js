@@ -37,12 +37,26 @@ import NameForm from './chapter11/NameForm';
 //import SignUp from './chapter11/SignUp';
 
 //
-import SignUp from './component/member/SignUp';
+//import SignUp from './component/member/SignUp';
+
+//chapter0 axios
+import Axios컴포넌트 from './chapter0/Axios컴포넌트';
+//chapter0 route
+import Route컴포넌트 from './chapter0/Route컴포넌트';
+
+// web2 라우터 컴포넌트
+import Index from './component/Index';
+
+//chapter12 실습
+import Calculator from './chapter12/Calculator';
+
+//chapter13 실습
+import ProfileCard from './chapter13/ProfileCard';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <SignUp />
+    < Index/>
   </React.StrictMode>
 );
 //1.setInterval(함수(), 밀리초) : 밀리초마다 해당 함수 실행
