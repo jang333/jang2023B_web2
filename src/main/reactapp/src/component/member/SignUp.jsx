@@ -25,10 +25,13 @@ export default function SignUp(props){
        let info = {memail : memail, mpassword : mpassword, mname : mname}
         axios.post("/member/signup/post.do", info) //contentType : JSON //오류 4xx
             .then(response => {console.log(response) //성공 200
-                if(response.data){
+                if(response.data ==1){
                     alert('회원가입 성공');
                     window.location.href="/member/login";
-                }else{
+                }else if(response.data ==2){
+                    alert('아이디 중복')
+                }
+                else{
                     alert('회원가입 실패');
                 }
             })

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Logout from "../member/Logout";
 
 export default function Header(props){
     
@@ -24,6 +25,7 @@ export default function Header(props){
                 <li><Link to="/">홈</Link></li>
                 <li><Link to="/member/signup">회원가입</Link></li>
                 <li><Link to="/member/login">로그인</Link></li>
+                <li><Link to="/member/logout">로그아웃</Link></li>
             </ul>
         </div>
     </>)

@@ -16,16 +16,26 @@ public class MemberService {
     MemberEntityRepository memberEntityRepository;
 
     //1.회원가입
-    public boolean doSignupPost(@RequestBody MemberDto memberDto){
+    public int doSignupPost(@RequestBody MemberDto memberDto){
         System.out.println("memberDto = " + memberDto);
+
+        // 리포지스토리를 통한 모든 회원엔티티호출
+        List<MemberEntity> memberEntityList = memberEntityRepository.findAll();
+        // 이메일중복검사실행
+        for(int i = 0 ; i<memberEntityList.size() ; i++){
+            MemberEntity m = memberEntityList.get(i);
+            if(m.getMemail().equals(memberDto.getMemail())){
+                return 2;
+            }
+        }
 
         // -- Dao 아닌 엔티티 이용한 레코드 저장하는방법
         //1. 엔티티를 만든다
         //2. 리포지토리 통한 엔티티를 저장 (엔티티 저장 성공시 매핑된 엔티티 반환)
         MemberEntity saveEntity = memberEntityRepository.save(memberDto.toEntity());
         //3. 엔티티가 생성 되었는지 (pk 생성유무로) 확인
-        if(saveEntity.getMno()>0) return true;
-        return false;
+        if(saveEntity.getMno()>0) return 1;
+        return 0;
     }
 
     //*로그인 했다는 증거/기록
