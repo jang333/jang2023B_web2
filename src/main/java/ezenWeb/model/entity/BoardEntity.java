@@ -1,5 +1,6 @@
 package ezenWeb.model.entity;
 
+import ezenWeb.model.dto.BoardDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -11,7 +12,7 @@ import java.util.List;
 @Table(name = "Board")
 @AllArgsConstructor @NoArgsConstructor
 @Setter @Getter @ToString @Builder
-public class BoardEntity {
+public class BoardEntity extends BaseTime{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bno;
@@ -33,6 +34,19 @@ public class BoardEntity {
     @ToString.Exclude
     @Builder.Default
     private List<ReplyEntity> replyEntityList = new ArrayList<>();
+
+    public BoardDto toDto(){
+        return BoardDto.builder()
+                .bno(this.bno)
+                .bcontent(this.bcontent)
+                .bview(this.bview)
+                .mno_fk(memberEntity.getMno())
+                .memail(memberEntity.getMemail())
+                .cdate(this.getCdate())
+                .udate(this.getUdate())
+                .build();
+    }
+
 
 
 //    private boolean 필드0;
