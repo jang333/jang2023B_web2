@@ -24,7 +24,7 @@ export default function Header(props){
         axios.get('/member/logout/get.do')
             .then((r)=> {console.log(r)
             if(r.data){
-                alert('로그인성공');
+                alert('로그아웃 성공');
                 window.location.href = '/member/login'
             }
             else{alert('로그아웃 실패')}
@@ -40,6 +40,8 @@ export default function Header(props){
                 <li><Link to="/member/signup">회원가입</Link></li>
                 <li><Link to="/member/login">로그인</Link></li>
                 <li><button onClick={onLogout} type="button">로그아웃</button></li>
+                <li><Link to="/board/write">글쓰기</Link></li>
+                <li><Link to="/board">전체글보기</Link></li>
             </ul>
         </div>
     </>)

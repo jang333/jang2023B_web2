@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +25,7 @@ public class BoardService {
     @Autowired private ReplyEntityRepository replyEntityRepository;
     @Autowired private MemberService memberService;
 
+    //C
     @Transactional
     public boolean postBoard(BoardDto boardDto){
         MemberDto loginDto = memberService.doLoginInfo();
@@ -48,12 +50,25 @@ public class BoardService {
 
 
     }
+
+    //R
     @Transactional
-    public List<Object> getBoard(){
+    public List<BoardDto> getBoard(){
         //1. 리포지토리를 이용한 모든 엔티티를 호출
         List<BoardEntity> result = boardEntityRepository.findAll();
+        //2. Entity ---> Dto 변환
+        List<BoardDto> boardDtoList = new ArrayList<>();
+            //1. 꺼내온 entity를 순환
+        for(int i = 0; i<result.size();i++){
+            //2. entity 하나씩 꺼내기
+            BoardEntity boardEntity = result.get(i);
+            //3. 해당 엔티티를 Dto로 변환
+            BoardDto boardDto = boardEntity.toDto();
+            //4. 변환된 dto 리스트에 담기
+            boardDtoList.add(boardDto);
+        }
         System.out.println("result = " + result);
-        return null;
+        return boardDtoList;
     }
     @Transactional
     public boolean putBoard(){

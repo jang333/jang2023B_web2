@@ -18,10 +18,11 @@ public class BoardController {
 
     @PostMapping("/post.do")
     public boolean postBoard(BoardDto boardDto){
+        System.out.println("boardDto = " + boardDto);
         return boardService.postBoard(boardDto);
     }
     @GetMapping("/get.do")
-    public List<Object> getBoard(){
+    public List<BoardDto> getBoard(){
         return boardService.getBoard();
     }
     @PutMapping("/put.do")
