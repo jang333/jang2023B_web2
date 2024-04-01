@@ -53,6 +53,10 @@ import Calculator from './chapter12/Calculator';
 //chapter13 실습
 import ProfileCard from './chapter13/ProfileCard';
 
+//chapter14 실습
+import DarkOrLight from './chapter14/DarkOrLight';
+import TextInputWithFoucusButton from './chapter14/TextInputWithFoucusButton';
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 
