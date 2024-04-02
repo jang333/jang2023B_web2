@@ -7,6 +7,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "Board")
@@ -35,6 +36,13 @@ public class BoardEntity extends BaseTime{
     @Builder.Default
     private List<ReplyEntity> replyEntityList = new ArrayList<>();
 
+    //양방향 : 사진 fk
+    @OneToMany(mappedBy = "boardEntity")
+    @ToString.Exclude
+    @Builder.Default
+    private List<BoardImgEntity> boardImgEntityList = new ArrayList<>();
+
+    //게시물출력
     public BoardDto toDto(){
         return BoardDto.builder()
                 .bno(this.bno)
@@ -44,6 +52,11 @@ public class BoardEntity extends BaseTime{
                 .memail(memberEntity.getMemail())
                 .cdate(this.getCdate())
                 .udate(this.getUdate())
+                .bimgList(
+                        this.getBoardImgEntityList().stream().map(
+                                (imgEntity) -> {return imgEntity.getBimg();}
+                        ).collect(Collectors.toList())
+                )
                 .build();
     }
 

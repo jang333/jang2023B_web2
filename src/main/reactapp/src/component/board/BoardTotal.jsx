@@ -1,37 +1,32 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
+import MediaCard from "./MediaCard";
+
 
 export default function BoardTotal(props){
 
     const [boardList, setBoardList] = useState([]);
 
-
-        useEffect(()=>{
-            axios.get('/board/get.do')
-            .then((r)=>{
-                setBoardList(r.data);
-                console.log(r.data);
-            })
-            .catch((e)=>{console.log(e)})
-        },[])        
-
-    
-
-    
-
+    useEffect(()=>{
+        axios.get('/board/get.do')
+        .then((r)=>{
+            setBoardList(r.data);
+            //console.log(r.data);
+        })
+        .catch((e)=>{console.log(e)})
+    },[])
+        
     return(<>
-        <div>
+
+        <div style={{display : "flex"}}>
             {boardList.map((i)=>{
                 console.log(i)
                 return (<>
-                    <li>{i.bcontent}</li>
-                    <li>{i.memail}</li>
+                    <MediaCard board ={i} />
                 </>)
                 })
             }
-
         </div>
-        전체글보기
 
         
     </>)
