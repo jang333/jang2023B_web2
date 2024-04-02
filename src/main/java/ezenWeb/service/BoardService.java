@@ -51,6 +51,7 @@ public class BoardService {
         System.out.println("saveBoard = " + saveBoard);
 
         System.out.println(boardDto.getUploadList());
+
             //이미지 넣기
         boardDto.getUploadList().forEach((i)->{
             System.out.println("i = " + i);
