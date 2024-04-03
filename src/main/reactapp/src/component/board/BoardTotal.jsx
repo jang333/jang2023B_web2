@@ -33,7 +33,7 @@ export default function BoardTotal(props){
             {pageDto.data.map((board)=>{
                 console.log(board)
                 return (<>
-                    <MediaCard board ={board} />
+                    <MediaCard board ={board} setPageDto = {setPageDto} />
                 </>)
                 })
             }

@@ -6,30 +6,44 @@ import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { LoginInfoContext } from '../Index';
+
 
 
 
 
 export default function MediaCard(props) {
-  console.log(props);
-  
-  
+  console.log(props);  
 
-  function ondelete(){
+  const navigate = useNavigate();
+  const {loginInfo} = useContext(LoginInfoContext);
+  console.log(loginInfo);
 
-    const info = {bno : props.board.bno, memail : props.board.memail}
-    console.log(info);
+  const onDelete = (event, bno, mno_fk) =>{
 
-      axios.delete('/board/delete.do',{params:info})
-      .then((r)=>{
-        console.log(r);
-        if(r.data){
-          alert('삭제 성공')
-          window.location.href = '/board'
-        }else{alert('삭제 실패')}
+    if(mno_fk != loginInfo.mno){
+      alert('삭제 불가능')
+    }
 
-      })
-      .catch((e)=>{console.log(e)})  
+    axios.delete('/board/delete.do',{params: {bno : bno}})
+    .then((r)=>{
+      console.log(r); 
+      if(r.data){
+        alert('삭제 성공')
+        //1. get방식
+        window.location.href = '/board'
+        //2. 라우터 방식
+          //1.useNavigete() 훅 //import { useNavigate } from 'react-router-dom';
+          //- const navigate = useNavigate();
+          //2. navigate(라우터URL)
+        //3.
+        //props.setPageDto()
+      }else{alert('삭제 실패')}
+
+    })
+    .catch((e)=>{console.log(e)})  
   }
   
   return (
@@ -49,7 +63,10 @@ export default function MediaCard(props) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small" onClick={ondelete} bno={props.board.bno}>Delete</Button>
+        {
+          props.board.mno_fk == loginInfo.mno &&
+          <Button size="small" onClick={(event)=>onDelete(event, props.board.bno, props.board.mno_fk)}>Delete</Button>
+        }        
         <Button size="small">Learn More</Button>
       </CardActions>
     </Card>

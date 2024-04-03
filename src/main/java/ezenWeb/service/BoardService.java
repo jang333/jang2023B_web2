@@ -156,20 +156,19 @@ public class BoardService {
         return false;
     }
     @Transactional
-    public boolean deleteBoard(int bno, String memail){
+    public boolean deleteBoard(int bno){
         if(bno==0) return false;
         ///로그인된 정보
         MemberDto loginDto = memberService.doLoginInfo();
         if(loginDto == null) return false;
-        Optional<MemberEntity> optionalMemberEntity = memberEntityRepository.findById(loginDto.getMno());
-        System.out.println("optionalMemberEntity = " + optionalMemberEntity);
-        MemberEntity memberEntity = optionalMemberEntity.get();
-        System.out.println("memberEntity = " + memberEntity);
-
-        if(memail.equals(memberEntity.getMemail())){
-            boardEntityRepository.deleteById(bno);
-        }else {return false;}
-        
+        //2.내 게시물 확인
+        Optional<BoardEntity> optionalBoardEntity = boardEntityRepository.findById(bno);
+        if(optionalBoardEntity.isPresent()){
+            if(optionalBoardEntity.get().getMemberEntity().getMno() == loginDto.getMno()){
+                boardEntityRepository.deleteById(bno);
+                return true;
+            }
+        }
 
         return true;
     }

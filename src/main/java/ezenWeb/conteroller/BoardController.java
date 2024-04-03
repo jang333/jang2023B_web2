@@ -31,10 +31,10 @@ public class BoardController {
         return boardService.putBoard();
     }
     @DeleteMapping("/delete.do")
-    public boolean deleteBoard(int bno, String memail){
+    public boolean deleteBoard(int bno){
         System.out.println("BoardController.deleteBoard");
         System.out.println("bno = " + bno);
-        return boardService.deleteBoard(bno,memail);
+        return boardService.deleteBoard(bno);
     }
 
 
