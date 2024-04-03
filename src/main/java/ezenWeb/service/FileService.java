@@ -12,8 +12,9 @@ public class FileService {
     private String uploadPath = "C:\\Users\\504\\Desktop\\jang2023B_web2\\build\\resources\\main\\static\\uploadimg\\";
 
     public String fileUpload(MultipartFile multipartFile){
-        //파일이름설정
-        String uuid = UUID.randomUUID().toString();
+
+        //파일이름을 식별가능한 uuid와 조합
+        String uuid = UUID.randomUUID().toString(); //uuid:고유한 id 난수성으로 생성
         System.out.println("uuid = " + uuid);
         String fileName = uuid+"_"+multipartFile.getOriginalFilename().replaceAll("_","-");
 

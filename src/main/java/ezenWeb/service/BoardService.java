@@ -2,6 +2,7 @@ package ezenWeb.service;
 
 import ezenWeb.model.dto.BoardDto;
 import ezenWeb.model.dto.MemberDto;
+import ezenWeb.model.dto.PageDto;
 import ezenWeb.model.entity.BoardEntity;
 import ezenWeb.model.entity.BoardImgEntity;
 import ezenWeb.model.entity.MemberEntity;
@@ -13,10 +14,14 @@ import ezenWeb.model.repository.ReplyEntityRepository;
 import jakarta.transaction.Transactional;
 import org.hibernate.service.spi.Stoppable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -52,15 +57,20 @@ public class BoardService {
 
         System.out.println(boardDto.getUploadList());
 
-            //이미지 넣기
+            //1.하나씩 업로드서비스에 업로드 요청
         boardDto.getUploadList().forEach((i)->{
             System.out.println("i = " + i);
+            //2.하나씩 업로드 된 파일명 반환받기
             String fileName = fileService.fileUpload(i);
-            BoardImgEntity boardImgEntity = BoardImgEntity.builder()
-                    .bimg(fileName)
-                    .boardEntity(saveBoard)
-                    .build();
-            boardImgRepository.save(boardImgEntity);
+            if(fileName != null) {
+                //3.하나씩 업로드된 파일명으로 게시물파일엔티티생성
+                BoardImgEntity boardImgEntity = BoardImgEntity.builder()
+                        .bimg(fileName)
+                        .boardEntity(saveBoard) //fk : 게시물 fk
+                        .build();
+                //4. 엔티티 영속성 (서버가 종료되면 삭제되니까 => DB에 저장하려고)
+                boardImgRepository.save(boardImgEntity);
+            }
         });
 
 
@@ -77,7 +87,7 @@ public class BoardService {
 
     //게시물 출력
     @Transactional
-    public List<BoardDto> getBoard(){
+    public PageDto getBoard(int page, int view){
 
         // ====================== 1 ======================
 /*
@@ -110,10 +120,30 @@ public class BoardService {
         // ====================== = ======================
 
         // ====================== 2 ======================
-        return boardEntityRepository.findAll().stream().map(
-            (boardEntity )->{
-                return boardEntity.toDto();
-            }).collect(Collectors.toList());
+        //현재페이지 : page /페이지당 표시할 게시물 수 : view
+        //1.pageable 인터페이스 이용한 페이징 처리
+        Pageable pageable = PageRequest.of(page-1,view);
+            //1. 페이징처리된 엔티티 호출
+        Page<BoardEntity> boardEntityPage = boardEntityRepository.findAll(pageable);
+
+            //-- List가 아닌 Page 타입일때 List 동일한 메소드 사용하고 추가 가능
+        System.out.println("boardEntityPage.getTotalPages() 전체페이지수 = " + boardEntityPage.getTotalPages());
+        int count = boardEntityPage.getTotalPages();
+        System.out.println("boardEntityPage.getTotalElements() 전체게시물수 = " + boardEntityPage.getTotalElements());
+
+        List<Object> data = boardEntityPage.stream().map(
+                (boardEntity )->{
+                    return boardEntity.toDto();
+                }).collect(Collectors.toList());
+            //2. 페이지DTO 반환값 구성
+        PageDto pageDto = PageDto.builder()
+                .data(data) // 페이징처리된 레코드들을 대입
+                .page(page) // 현재 페이지수
+                .count(count)    // 총페이지수
+                .build();
+
+        //2. 게시물 레코드들을
+        return pageDto;
         // ====================== = ======================
 
     }// m e
@@ -126,8 +156,20 @@ public class BoardService {
         return false;
     }
     @Transactional
-    public boolean deleteBoard(){
-        boardEntityRepository.deleteById(1);
-        return false;
+    public boolean deleteBoard(int bno, String memail){
+        if(bno==0) return false;
+        ///로그인된 정보
+        MemberDto loginDto = memberService.doLoginInfo();
+        Optional<MemberEntity> optionalMemberEntity = memberEntityRepository.findById(loginDto.getMno());
+        System.out.println("optionalMemberEntity = " + optionalMemberEntity);
+        MemberEntity memberEntity = optionalMemberEntity.get();
+        System.out.println("memberEntity = " + memberEntity);
+
+        if(memail.equals(memberEntity.getMemail())){
+            boardEntityRepository.deleteById(bno);
+        }else {return false;}
+        
+
+        return true;
     }
 }
