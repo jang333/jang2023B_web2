@@ -160,6 +160,7 @@ public class BoardService {
         if(bno==0) return false;
         ///로그인된 정보
         MemberDto loginDto = memberService.doLoginInfo();
+        if(loginDto == null) return false;
         Optional<MemberEntity> optionalMemberEntity = memberEntityRepository.findById(loginDto.getMno());
         System.out.println("optionalMemberEntity = " + optionalMemberEntity);
         MemberEntity memberEntity = optionalMemberEntity.get();
