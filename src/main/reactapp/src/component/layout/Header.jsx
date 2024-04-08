@@ -42,6 +42,7 @@ export default function Header(props){
                 <li><button onClick={onLogout} type="button">로그아웃</button></li>
                 <li><Link to="/board/write">글쓰기</Link></li>
                 <li><Link to="/board">전체글보기</Link></li>
+                <li><Link to="/chat">채팅방</Link></li>
             </ul>
         </div>
     </>)
