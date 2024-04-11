@@ -101,7 +101,7 @@ export default function Chatting(props){
     };
     const handleClose = () => {
     setAnchorEl(null);
-    };
+    }; 
 
     //console.log(Array(43)); //길이만큼의 배열 선언
     //console.log(Array(43).fill(6));

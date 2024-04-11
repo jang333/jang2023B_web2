@@ -7,6 +7,13 @@ import ezenWeb.model.entity.MemberEntity;
 import ezenWeb.model.repository.MemberEntityRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -16,11 +23,37 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class MemberService {
+public class MemberService implements UserDetailsService {
+
     @Autowired
     MemberEntityRepository memberEntityRepository;
 
-    //1.회원가입
+    //- (시큐리티) 로그인 커스텀
+    @Override
+    public UserDetails loadUserByUsername(String memail) throws UsernameNotFoundException {
+        //1. 로그인창에서 입력받은 아이디
+        System.out.println("memail = " + memail);
+        //2. 입력받은 아이디로 실제 아이디와 실제(암호화된) 패스워드
+            //2-1. memail 이용한 회원엔티티찾기
+        MemberEntity memberEntity = memberEntityRepository.findByMemail(memail);
+
+        // - ROLE 부여
+        List<GrantedAuthority> 등급목록 = new ArrayList<>();
+        등급목록.add(new SimpleGrantedAuthority("ROLE_USER")); //ROLE_등급명
+
+        //3. UserDetails 반환 [1. 실제 아이디 2. 실제 패스워드]
+            // UserDetails 목적 : Token에 입력받은 아이디/패스워드를 검증하기 위한 실제 정보 반환
+        UserDetails userDetails = User.builder()
+                        .username(memberEntity.getMemail())    //실제 아이디
+                        .password(memberEntity.getMpassword()) //실제 비밀번호(암호화된)
+                        .authorities(등급목록) //ROLE 등급
+                        .build();
+
+        return userDetails;
+    }
+
+
+    //1.회원가입 (시큐리티 사용시 패스워드 암호화 필수)
     public int doSignupPost(@RequestBody MemberDto memberDto){
         System.out.println("memberDto = " + memberDto);
 
@@ -75,11 +108,30 @@ public class MemberService {
 
     //4. 현재 로그인된 회원정보 호출(세션 값 호출/반환)
     public MemberDto doLoginInfo(){
-        Object object =request.getSession().getAttribute("loginInfo");
-        if(object != null){
-            return (MemberDto)object;
+        //시큐리티를 사용하기 전
+//        Object object =request.getSession().getAttribute("loginInfo");
+//        if(object != null){
+//            return (MemberDto)object;
+//        }
+//        return null;
+
+        //시큐리티를 사용했을때 / 1.Principal : 본인/주역/주체자 : 브라우저마다 1개
+        Object object = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println("object = " + object);
+        //2. 만약에 로그인 상태가 아니면
+        if(object.equals("annoymousUser")){//annoymous : 익명 -> 비로그인
+            return null;
         }
-        return null;
+        //3. 로그인 상태이면 UserDetails 타입으로 변환
+        UserDetails userDetails = (UserDetails) object;
+        //4. 로그인 성공한 엔티티 찾기
+        MemberEntity m = memberEntityRepository.findByMemail(userDetails.getUsername());
+        //5. 회원정보(비밀번호 제외 권장)
+        return MemberDto.builder()
+                .memail(m.getMemail())
+                .mname(m.getMname())
+                .mno(m.getMno())
+                .build();
     }
 
     //5. 아이디/이메일 중복검사

@@ -23,17 +23,20 @@ public class MemberController {
 
         return memberService.doSignupPost(memberDto);
     }
+//==================== 스프링 시큐리티로 인한 로그인/로그아웃 사용 안함 ===================
 
-    @PostMapping("/login/post.do") //2. 로그인
-    public boolean doLoginPost(MemberDto memberDto){
-        System.out.println("memberDto = " + memberDto);
-        return memberService.doLoginPost(memberDto);
-    }
+//    @PostMapping("/login/post.do") //2. 로그인
+//    public boolean doLoginPost(MemberDto memberDto){
+//        System.out.println("memberDto = " + memberDto);
+//        return memberService.doLoginPost(memberDto);
+//    }
 
-    @GetMapping("/logout/get.do") //3. 로그아웃
-    public boolean doLogoutGet(){
-        return memberService.doLogoutGet();
-    }
+//    @GetMapping("/logout/get.do") //3. 로그아웃
+//    public boolean doLogoutGet(){
+//        return memberService.doLogoutGet();
+//    }
+
+// ==================== ========================================= ====================
 
     @GetMapping("/login/info/get.do")
     public MemberDto doLoginInfo(){
