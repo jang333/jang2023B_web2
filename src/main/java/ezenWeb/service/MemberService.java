@@ -14,6 +14,10 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -23,7 +27,14 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class MemberService implements UserDetailsService {
+public class MemberService implements UserDetailsService, OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+
+    // - (시큐리티/소셜회원) 로그인 서비스 커스텀
+    @Override
+    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        System.out.println("userRequest = " + userRequest);
+        return null;
+    }
 
     @Autowired
     MemberEntityRepository memberEntityRepository;
@@ -36,10 +47,13 @@ public class MemberService implements UserDetailsService {
         //2. 입력받은 아이디로 실제 아이디와 실제(암호화된) 패스워드
             //2-1. memail 이용한 회원엔티티찾기
         MemberEntity memberEntity = memberEntityRepository.findByMemail(memail);
+        //- 만약에 입력한 이메일의 엔티티가 없으면
+        if(memberEntity == null){//없는 아이디
+            throw new UsernameNotFoundException("없는 아이디");} //UserDetails가 null이면 패스워드 검증실패 했기 때문에
 
         // - ROLE 부여
         List<GrantedAuthority> 등급목록 = new ArrayList<>();
-        등급목록.add(new SimpleGrantedAuthority("ROLE_USER")); //ROLE_등급명
+        등급목록.add(new SimpleGrantedAuthority("ROLE_"+memberEntity.getMrol())); //ROLE_등급명
 
         //3. UserDetails 반환 [1. 실제 아이디 2. 실제 패스워드]
             // UserDetails 목적 : Token에 입력받은 아이디/패스워드를 검증하기 위한 실제 정보 반환
@@ -119,7 +133,7 @@ public class MemberService implements UserDetailsService {
         Object object = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         System.out.println("object = " + object);
         //2. 만약에 로그인 상태가 아니면
-        if(object.equals("annoymousUser")){//annoymous : 익명 -> 비로그인
+        if(object.equals("anonymousUser")){//anonymousUser : 익명 -> 비로그인
             return null;
         }
         //3. 로그인 상태이면 UserDetails 타입으로 변환

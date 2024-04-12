@@ -43,8 +43,19 @@ public class SecurityConfig {//시큐리티를 컴스텀 하는곳
                         .loginProcessingUrl("/member/login/post.do")    //로그인을 처리할 url 정의
                         .usernameParameter("memail")                    //로그인에 사용할 id 변수명
                         .passwordParameter("mpassword")                 //로그인에 사용할 pw 변수명
-                        .defaultSuccessUrl("/")                         //로그인 성공하면 반환될 url
-                        .failureForwardUrl("/member/login")             //로그인 실패하면 반환될 url
+                        //.defaultSuccessUrl("/")                         //로그인 성공하면 반환될 url
+                        //.failureForwardUrl("/member/login")             //로그인 실패하면 반환될 url
+                        //.successHandler((request : http요청객체, response:http응답객체, authentication:성공유저인증정보객체) -> { })
+                        .successHandler((request, response, authentication) -> {
+                            response.setContentType("application/json;utf-8");
+                            response.getWriter().println("true");   //@RequestBody 역할
+                        })
+                        //.failureHandler((request: http요청객체, response:http응답객체, exception: 실패정보객체) -> {})
+                        .failureHandler((request, response, exception) -> {
+                            System.out.println("exception = " + exception); //실패 예외 이유
+                            response.setContentType("application/json;utf-8");
+                            response.getWriter().println("false");
+                        })
                 );
 
         //3. 로그아웃 커스텀 (기존 controller 매핑 주석/삭제 처리)
@@ -64,8 +75,20 @@ public class SecurityConfig {//시큐리티를 컴스텀 하는곳
         //5. 로그인 처리에 서비스를 등록
         http.userDetailsService(memberService);
 
+        //6. oauth2(소셜 로그인)
+        http.oauth2Login(oAuth2LoginConfigurer -> {
+           oAuth2LoginConfigurer
+                   .loginPage("/member/login") // oauth2 로그인을 할 view url 정의
+                   .userInfoEndpoint(userInfoEndpointConfig -> {
+                       userInfoEndpointConfig.userService(memberService);
+                   });
+        });
+            //Endpoint : 종착점
+            // 세션 : 1.(톰캣)http서블릿세션 2.(JS)Session 3.(WS)WebSocketSession
+                // - 저장소
 
         return http.build();
+
     }//m end
 
 

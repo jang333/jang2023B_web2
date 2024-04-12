@@ -4,6 +4,7 @@ import ezenWeb.model.dto.MemberDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 @Entity
 @Table(name = "member")
 @AllArgsConstructor @NoArgsConstructor
-@Setter @Getter @ToString @Builder
+@Setter @Getter @ToString @Builder @DynamicInsert
 public class MemberEntity extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +28,7 @@ public class MemberEntity extends BaseTime {
     private String mname;
 
     @Column(name = "mrol")
-    @ColumnDefault("'user'")
+    @ColumnDefault("'USER'") //문자'', 숫자 //@ColumnDefault + 클래스 @DynamicInsert
     private String mrol;
 
     //양방향 : 게시물 fk @OneToMany(mappedBy = "해당테이블 fk자바필드명")
